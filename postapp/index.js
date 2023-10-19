@@ -4,29 +4,44 @@ const cors = require('cors');
 const { randomBytes } = require('crypto');
 const axios = require('axios');
 
-const app = express()
-app.use(bodyParser.json())
-app.use(cors())
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
 
-const posts = {}
+const posts = {};
 
+// Posts App
 app.get('/posts', (req, res) => {
-    res.send(posts)
-})
+  res.send(posts);
+});
 
+// Recibe informacion, guardala en BD y enviala al Bus de Eventos
 app.post('/posts', async (req, res) => {
-    const id = randomBytes(4).toString('hex')
-    const { title } = req.body
-    posts[id] = { id, title }
-    res.status(201).send(posts[id])
-})
+  const id = randomBytes(4).toString('hex');
+  const { title } = req.body;
+  posts[id] = { id, title };
 
-app.post('events', (req, res) => {
-    // Al crear post mandar los datos al Bus de Eventos
-    // await axios('https://localhost:4005/events')
-    res.send('Post Creado')
-})
+  try {
+    // Manda informacion a esta ruta que tiene el servidor Bus de Eventos
+    await axios.post('http://localhost:4005/eventos', {
+      type: 'PostCreated',
+      data: { id, title },
+    });
+  } catch (error) {
+    console.log(Object.keys(error));
+    console.log('error code: ', error.code);
+    console.log('cause: ', error.cause.constructor.name);
+    return res.status(400).json({ error: error.toString() });
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+app.post('/recibirEventos', (req, res) => {
+  console.log('Evento recibido', req.body.type);
+  res.send({});
+});
 
 app.listen(4000, () => {
-    console.log('Servidor Post escuchando en puerto 4000');
-})
+  console.log('Post escuchando en puerto 4000');
+});
