@@ -39,10 +39,9 @@ app.post('/recibirEventos', (req, res) => {
     // no llega hasta aqui
     const post = postdb[postId];
     if (!post) {
-      console.log(
-        `CommentCreated recibido, lamentablemente el Post con {id: ${postId}} asociado al comentario no existe.`
-      );
-      return res.send('Servidor caido cuando se creo el Post');
+      let error = `CommentCreated recibido, lamentablemente el Post con {id: ${postId}} asociado al comentario no existe.`;
+      console.log(error);
+      return res.send({ message: error });
     }
     post.comments.push({ id, content });
     console.log(post);

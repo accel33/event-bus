@@ -35,8 +35,14 @@ app.post('/posts/:id/comments', async (req, res) => {
       },
     });
   } catch (error) {
+    // console.log(Object.keys(error));
     console.log('error code: ', error.code);
-    console.log('cause: ', error.cause.constructor.name);
+    console.log('cause: ', error.cause?.constructor?.name);
+    console.log('message: ', error.message);
+    console.log('url: ', error.response?.config.url);
+
+    console.log('statusText: ', error.response?.statusText);
+    console.log('statusCode: ', error.request?.res?.statusCode);
     return res.status(400).json({ error: error.toString() });
   }
 

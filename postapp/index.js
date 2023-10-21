@@ -28,9 +28,11 @@ app.post('/posts', async (req, res) => {
       data: { id, title },
     });
   } catch (error) {
-    console.log(Object.keys(error));
+    // console.log(Object.keys(error));
     console.log('error code: ', error.code);
-    console.log('cause: ', error.cause.constructor.name);
+    console.log('cause: ', error.cause?.constructor.name);
+    console.log('url: ', error.response?.config.url);
+
     return res.status(400).json({ error: error.toString() });
   }
 
