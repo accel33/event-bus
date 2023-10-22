@@ -27,28 +27,35 @@ app.get('/posts', (req, res) => {
 // desc: recibe y guarda informacion del cliente Eventos
 app.post('/recibirEventos', (req, res) => {
   const { type, data } = req.body;
-  if (type === 'PostCreated') {
+  if (type === 'PostCreado') {
     const { id, title } = data;
     postdb[id] = { id, title, comments: [] };
     console.log(postdb[id]);
   }
-  if (type === 'CommentCreated') {
-    const { id, content, postId } = data;
+  if (type === 'ComentarioCreado') {
+    const { id, content, postId, status } = data;
     // Este no existe, es undefined, si empieza tarde
     // Si este evento se apaga y se crea un Post que
     // no llega hasta aqui
     const post = postdb[postId];
     if (!post) {
-      let error = `CommentCreated recibido, lamentablemente el Post con {id: ${postId}} asociado al comentario no existe.`;
+      let error = `ComentarioCreado recibido, lamentablemente el Post con {id: ${postId}} asociado al comentario no existe.`;
       console.log(error);
       return res.send({ message: error });
     }
-    post.comments.push({ id, content });
+    post.comments.push({ id, content, status });
     console.log(post);
+  }
+  if (type === 'ComentarioActualizado') {
+    const { id, postId, content, status } = data;
+    const post = postdb[postId];
+    const comment = post.comments.find((comment) => comment.id === id);
+    comment.status = status;
+    comment.content = content;
   }
   res.send('Servidor query enviando objeto');
 });
 
 app.listen(4002, () => {
-  console.log('Query escuchando en puerto 4002');
+  console.log('[Servidor Query]: escuchando en puerto 4002');
 });

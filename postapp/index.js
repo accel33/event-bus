@@ -24,7 +24,7 @@ app.post('/posts', async (req, res) => {
   try {
     // Manda informacion a esta ruta que tiene el servidor Bus de Eventos
     await axios.post('http://localhost:4005/eventos', {
-      type: 'PostCreated',
+      type: 'PostCreado',
       data: { id, title },
     });
   } catch (error) {
@@ -41,9 +41,10 @@ app.post('/posts', async (req, res) => {
 
 app.post('/recibirEventos', (req, res) => {
   console.log('Evento recibido', req.body.type);
+
   res.send({});
 });
 
 app.listen(4000, () => {
-  console.log('Post escuchando en puerto 4000');
+  console.log('[Servicio Post]: escuchando en puerto 4000');
 });

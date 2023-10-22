@@ -16,6 +16,8 @@ app.post('/eventos', async (req, res) => {
     axios.post('http://localhost:4001/recibirEventos', event);
     // Querys
     axios.post('http://localhost:4002/recibirEventos', event);
+    // Moderator
+    axios.post('http://localhost:4003/recibirEventos', event);
   } catch (error) {
     var now = new Date();
     var isoDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
@@ -29,5 +31,5 @@ app.post('/eventos', async (req, res) => {
 });
 
 app.listen(4005, () => {
-  console.log('Event Bus escuchando en puerto 4005...');
+  console.log('[Servicio Event Bus]: escuchando en puerto 4005...');
 });
